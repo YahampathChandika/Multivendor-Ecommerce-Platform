@@ -9,9 +9,35 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const supabase = await createServerSupabaseClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-    if (!error) {
+    if (!error && data.user) {
+      // Ensure user profile exists in public.users table
+      try {
+        const { error: profileError } = await supabase.from("users").upsert(
+          {
+            id: data.user.id,
+            email: data.user.email!,
+            full_name:
+              data.user.user_metadata?.full_name ||
+              data.user.user_metadata?.name ||
+              null,
+            avatar_url: data.user.user_metadata?.avatar_url || null,
+          },
+          {
+            onConflict: "id",
+            ignoreDuplicates: false,
+          }
+        );
+
+        if (profileError) {
+          console.error("Error creating user profile:", profileError);
+        }
+      } catch (profileError) {
+        console.error("Failed to create user profile:", profileError);
+        // Don't fail the authentication process if profile creation fails
+      }
+
       // Successful authentication, redirect to intended page
       return NextResponse.redirect(`${origin}${next}`);
     }

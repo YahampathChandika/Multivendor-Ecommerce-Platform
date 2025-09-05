@@ -60,15 +60,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      set({ user: session?.user ?? null });
+
+      if (session?.user) {
+        set({ user: session.user });
+        await ensureUserProfile(session.user);
+      }
 
       // Listen for auth changes
       supabase.auth.onAuthStateChange(async (event, session) => {
-        set({ user: session?.user ?? null });
+        const user = session?.user ?? null;
+        set({ user });
 
         // Create user profile if it doesn't exist
-        if (session?.user && event === "SIGNED_IN") {
-          await ensureUserProfile(session.user);
+        if (user && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")) {
+          await ensureUserProfile(user);
         }
       });
     } catch (error) {
@@ -85,25 +90,34 @@ async function ensureUserProfile(user: User) {
 
   try {
     // Check if user profile exists
-    const { data: existingUser } = await supabase
+    const { data: existingUser, error: checkError } = await supabase
       .from("users")
       .select("id")
       .eq("id", user.id)
       .single();
 
-    // Create user profile if it doesn't exist
-    if (!existingUser) {
-      const { error } = await supabase.from("users").insert({
+    // If user doesn't exist, create profile
+    if (!existingUser && checkError?.code === "PGRST116") {
+      console.log("Creating user profile for:", user.email);
+
+      const { error: insertError } = await supabase.from("users").insert({
         id: user.id,
         email: user.email!,
-        full_name: user.user_metadata?.full_name || user.user_metadata?.name,
-        avatar_url: user.user_metadata?.avatar_url,
+        full_name:
+          user.user_metadata?.full_name || user.user_metadata?.name || null,
+        avatar_url: user.user_metadata?.avatar_url || null,
       });
 
-      if (error && error.code !== "23505") {
-        // Ignore duplicate key error
-        console.error("Error creating user profile:", error);
+      if (insertError) {
+        // Ignore duplicate key error (race condition)
+        if (insertError.code !== "23505") {
+          console.error("Error creating user profile:", insertError);
+        }
+      } else {
+        console.log("User profile created successfully");
       }
+    } else if (checkError && checkError.code !== "PGRST116") {
+      console.error("Error checking user profile:", checkError);
     }
   } catch (error) {
     console.error("Error ensuring user profile:", error);

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils/currency";
+import { ensureArray } from "@/lib/utils/array";
 import type { Product } from "@/lib/types/product";
 
 interface ProductCardProps {
@@ -14,7 +15,10 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, className }: ProductCardProps) {
-  const primaryImage = product.images[0] || "/placeholder-product.jpg";
+  const primaryImage =
+    ensureArray<string>(product.images)[0] || "/placeholder-product.jpg";
+  const sizes = ensureArray<string>(product.sizes);
+  const colors = ensureArray<string>(product.colors);
 
   return (
     <Link href={`/products/${product.slug}`} className={className}>
@@ -75,11 +79,11 @@ export function ProductCard({ product, className }: ProductCardProps) {
             </div>
 
             {/* Sizes preview */}
-            {product.sizes.length > 0 && (
+            {sizes.length > 0 && (
               <div className="flex items-center gap-1 mt-2">
                 <span className="text-xs text-muted-foreground">Sizes:</span>
                 <div className="flex gap-1">
-                  {product.sizes.slice(0, 4).map((size) => (
+                  {sizes.slice(0, 4).map((size) => (
                     <span
                       key={size}
                       className="text-xs px-1.5 py-0.5 bg-muted rounded text-muted-foreground"
@@ -87,9 +91,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
                       {size}
                     </span>
                   ))}
-                  {product.sizes.length > 4 && (
+                  {sizes.length > 4 && (
                     <span className="text-xs text-muted-foreground">
-                      +{product.sizes.length - 4}
+                      +{sizes.length - 4}
                     </span>
                   )}
                 </div>

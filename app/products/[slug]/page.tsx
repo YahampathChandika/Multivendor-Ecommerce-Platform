@@ -15,6 +15,7 @@ import { ColorSwatches } from "@/components/products/color-swatches";
 import { useProductStore } from "@/lib/store/product-store";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { formatCurrency } from "@/lib/utils/currency";
+import { ensureArray } from "@/lib/utils/array";
 import {
   ArrowLeft,
   Heart,
@@ -49,12 +50,15 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     if (currentProduct) {
-      // Set default selections
-      if (currentProduct.sizes.length > 0 && !selectedSize) {
-        setSelectedSize(currentProduct.sizes[0]);
+      // Ensure arrays and set default selections
+      const sizes = ensureArray<string>(currentProduct.sizes);
+      const colors = ensureArray<string>(currentProduct.colors);
+
+      if (sizes.length > 0 && !selectedSize) {
+        setSelectedSize(sizes[0]);
       }
-      if (currentProduct.colors.length > 0 && !selectedColor) {
-        setSelectedColor(currentProduct.colors[0]);
+      if (colors.length > 0 && !selectedColor) {
+        setSelectedColor(colors[0]);
       }
     }
   }, [currentProduct, selectedSize, selectedColor]);
@@ -114,10 +118,15 @@ export default function ProductDetailPage() {
     );
   }
 
+  // Get safe arrays for rendering
+  const images = ensureArray<string>(currentProduct.images);
+  const sizes = ensureArray<string>(currentProduct.sizes);
+  const colors = ensureArray<string>(currentProduct.colors);
+
   const canAddToCart =
     currentProduct.stock > 0 &&
-    (currentProduct.sizes.length === 0 || selectedSize) &&
-    (currentProduct.colors.length === 0 || selectedColor);
+    (sizes.length === 0 || selectedSize) &&
+    (colors.length === 0 || selectedColor);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -147,10 +156,7 @@ export default function ProductDetailPage() {
             {/* Main Image */}
             <div className="aspect-square relative overflow-hidden rounded-2xl bg-white">
               <Image
-                src={
-                  currentProduct.images[selectedImageIndex] ||
-                  "/placeholder-product.jpg"
-                }
+                src={images[selectedImageIndex] || "/placeholder-product.jpg"}
                 alt={currentProduct.title}
                 fill
                 className="object-cover"
@@ -172,9 +178,9 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Image Thumbnails */}
-            {currentProduct.images.length > 1 && (
+            {images.length > 1 && (
               <div className="flex gap-2 overflow-x-auto">
-                {currentProduct.images.map((image, index) => (
+                {images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}

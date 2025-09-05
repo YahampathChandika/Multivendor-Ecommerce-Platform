@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AuthButton } from "@/components/auth/auth-button";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { ShoppingCart, Menu, X, Search, Heart, User } from "lucide-react";
+import { ShoppingCart, Menu, X, Search, Heart, User, Package } from "lucide-react";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -106,7 +106,7 @@ export function Header() {
                   asChild
                 >
                   <Link href="/orders">
-                    <User className="h-4 w-4" />
+                    <Package className="h-4 w-4" />
                   </Link>
                 </Button>
               </>

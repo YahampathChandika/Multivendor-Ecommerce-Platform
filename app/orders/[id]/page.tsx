@@ -199,7 +199,7 @@ function OrderDetailContent() {
           <Alert className="mb-6 border-green-200 bg-green-50">
             <CheckCircle className="h-4 w-4 text-green-600" />
             <AlertDescription className="text-green-800">
-              🎉 Your order has been placed successfully! You'll receive an
+              🎉 Your order has been placed successfully! You&apos;ll receive an
               email confirmation shortly.
             </AlertDescription>
           </Alert>

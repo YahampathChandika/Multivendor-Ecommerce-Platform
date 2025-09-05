@@ -17,27 +17,36 @@ export function validateCategory(category: string): boolean {
   return validCategories.includes(category);
 }
 
-// lib/utils/currency.ts
-export function formatCurrency(
-  amount: number,
-  currency: string = "USD"
-): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-  }).format(amount);
+export function validateRequired(value: any): boolean {
+  if (typeof value === "string") {
+    return value.trim().length > 0;
+  }
+  return value !== null && value !== undefined;
 }
 
-export function calculateTax(subtotal: number, taxRate: number = 0.08): number {
-  return subtotal * taxRate;
+export function validateMinLength(value: string, minLength: number): boolean {
+  return value.trim().length >= minLength;
 }
 
-export function calculateShipping(
-  weight: number,
-  baseRate: number = 12.0
-): number {
-  // Simple shipping calculation based on weight
-  if (weight <= 0.5) return baseRate;
-  if (weight <= 2) return baseRate + 5;
-  return baseRate + 10;
+export function validateMaxLength(value: string, maxLength: number): boolean {
+  return value.trim().length <= maxLength;
+}
+
+export function validatePhoneNumber(phone: string): boolean {
+  const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
+  return phoneRegex.test(phone);
+}
+
+export function validatePostalCode(
+  code: string,
+  country: string = "US"
+): boolean {
+  const patterns = {
+    US: /^\d{5}(-\d{4})?$/,
+    CA: /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
+    UK: /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s?\d[A-Za-z]{2}$/,
+  };
+
+  const pattern = patterns[country as keyof typeof patterns];
+  return pattern ? pattern.test(code) : true; // Default to valid for unknown countries
 }

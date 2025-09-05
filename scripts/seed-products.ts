@@ -1,11 +1,42 @@
 // scripts/seed-products.ts
 import { createClient } from "@supabase/supabase-js";
-import 'dotenv/config';
+import "dotenv/config";
 
-// Use a more flexible type for seeding - bypass strict typing temporarily
+// Type for vendor insert
+interface VendorInsert {
+  name: string;
+  email: string;
+  description: string;
+  logo_url: string;
+  is_active: boolean;
+}
+
+// Type for product insert
+interface ProductInsert {
+  slug: string;
+  sku: string;
+  title: string;
+  description: string;
+  price: number;
+  currency: string;
+  images: string;
+  sizes: string;
+  colors: string;
+  stock: number;
+  weight: number;
+  category: "men" | "women" | "kids" | "other";
+  vendor_id?: string;
+}
+
 // Add after the imports for testing
-console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Found' : 'Missing');
-console.log('Service Key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Found' : 'Missing');
+console.log(
+  "Supabase URL:",
+  process.env.NEXT_PUBLIC_SUPABASE_URL ? "Found" : "Missing"
+);
+console.log(
+  "Service Key:",
+  process.env.SUPABASE_SERVICE_ROLE_KEY ? "Found" : "Missing"
+);
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,7 +44,7 @@ const supabase = createClient(
 );
 
 // Sample vendors data - properly typed for insert
-const vendors = [
+const vendors: VendorInsert[] = [
   {
     name: "FashionHub",
     email: "contact@fashionhub.com",
@@ -28,10 +59,10 @@ const vendors = [
     logo_url: "https://via.placeholder.com/200x200?text=StyleCo",
     is_active: true,
   },
-] as const;
+];
 
 // Sample products data - properly typed for insert
-const products = [
+const products: ProductInsert[] = [
   {
     slug: "premium-tagerine-shirt",
     sku: "PTS-001",
@@ -136,22 +167,17 @@ const products = [
     weight: 1.3,
     category: "men",
   },
-] as const;
+];
 
 async function seedDatabase() {
   try {
     console.log("🌱 Starting database seeding...");
 
-    // Clear existing data first (optional - uncomment if you want to reset)
-    // console.log("🧹 Clearing existing data...");
-    // await supabase.from("products").delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    // await supabase.from("vendors").delete().neq('id', '00000000-0000-0000-0000-000000000000');
-
     // 1. Insert vendors
     console.log("📦 Inserting vendors...");
 
     // Insert vendors one by one to handle potential conflicts
-    const vendorData: typeof vendors[number][] = [];
+    const vendorData: { id: string; name: string }[] = [];
     for (const vendor of vendors) {
       const { data, error } = await supabase
         .from("vendors")
@@ -179,7 +205,7 @@ async function seedDatabase() {
     }
 
     // 2. Prepare products with vendor_id
-    const productsWithVendors = products.map((product: any, index: number) => ({
+    const productsWithVendors = products.map((product, index) => ({
       ...product,
       vendor_id: vendorData[index % vendorData.length].id, // Distribute products across vendors
     }));

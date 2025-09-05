@@ -1,4 +1,31 @@
 // lib/types/database.ts
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
+export interface ShippingAddress {
+  fullName: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  phone?: string;
+}
+
+export interface PaymentMetadata {
+  method?: string;
+  transactionId?: string;
+  processor?: string;
+  last4?: string;
+  [key: string]: Json | undefined;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -162,7 +189,7 @@ export type Database = {
           id: string;
           order_number: string;
           user_id: string;
-          shipping_address: any; // JSON
+          shipping_address: ShippingAddress;
           tracking_number: string | null;
           subtotal: number;
           shipping_cost: number;
@@ -178,7 +205,7 @@ export type Database = {
             | "cancelled";
           payment_method: string | null;
           payment_status: "pending" | "completed" | "failed";
-          payment_metadata: any; // JSON
+          payment_metadata: PaymentMetadata;
           notes: string | null;
           created_at: string;
           updated_at: string;
@@ -190,7 +217,7 @@ export type Database = {
           id?: string;
           order_number: string;
           user_id: string;
-          shipping_address: any;
+          shipping_address: ShippingAddress;
           tracking_number?: string | null;
           subtotal: number;
           shipping_cost?: number;
@@ -206,7 +233,7 @@ export type Database = {
             | "cancelled";
           payment_method?: string | null;
           payment_status?: "pending" | "completed" | "failed";
-          payment_metadata?: any;
+          payment_metadata?: PaymentMetadata;
           notes?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -218,7 +245,7 @@ export type Database = {
           id?: string;
           order_number?: string;
           user_id?: string;
-          shipping_address?: any;
+          shipping_address?: ShippingAddress;
           tracking_number?: string | null;
           subtotal?: number;
           shipping_cost?: number;
@@ -234,7 +261,7 @@ export type Database = {
             | "cancelled";
           payment_method?: string | null;
           payment_status?: "pending" | "completed" | "failed";
-          payment_metadata?: any;
+          payment_metadata?: PaymentMetadata;
           notes?: string | null;
           created_at?: string;
           updated_at?: string;

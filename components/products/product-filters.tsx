@@ -125,7 +125,7 @@ export function ProductFilters() {
 
             {filters.search && (
               <Badge variant="secondary" className="text-xs">
-                Search: "{filters.search}"
+                Search: &quot;{filters.search}&quot;
                 <Button
                   variant="ghost"
                   size="sm"

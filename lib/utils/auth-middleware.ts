@@ -1,9 +1,10 @@
 // lib/utils/auth-middleware.ts
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createApiError } from "./api-response";
+import type { User } from "@supabase/supabase-js";
 
 export async function withAuth<T>(
-  handler: (user: any, request: Request) => Promise<T>
+  handler: (user: User, request: Request) => Promise<T>
 ) {
   return async (request: Request) => {
     try {

@@ -17,7 +17,7 @@ export function validateCategory(category: string): boolean {
   return validCategories.includes(category);
 }
 
-export function validateRequired(value: any): boolean {
+export function validateRequired(value: unknown): boolean {
   if (typeof value === "string") {
     return value.trim().length > 0;
   }

@@ -66,7 +66,7 @@ export default function ExplorePage() {
               <Badge variant="secondary">{filters.category}</Badge>
             )}
             {filters.search && (
-              <Badge variant="secondary">"{filters.search}"</Badge>
+              <Badge variant="secondary">&quot;{filters.search}&quot;</Badge>
             )}
           </div>
         </div>

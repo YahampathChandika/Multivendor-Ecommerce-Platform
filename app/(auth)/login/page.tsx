@@ -42,7 +42,7 @@ export default function LoginPage() {
         {/* Additional Info */}
         <div className="text-center text-sm text-muted-foreground">
           <p>
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/register"
               className="text-orange-500 hover:text-orange-600 font-medium"
@@ -55,7 +55,7 @@ export default function LoginPage() {
         {/* Redirect Info */}
         {redirectTo !== "/explore" && (
           <div className="text-center text-xs text-muted-foreground bg-orange-50 p-3 rounded-lg">
-            You'll be redirected to your intended page after signing in
+            You&apos;ll be redirected to your intended page after signing in
           </div>
         )}
       </div>

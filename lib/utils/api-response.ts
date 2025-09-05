@@ -1,7 +1,7 @@
 // lib/utils/api-response.ts
 import { NextResponse } from "next/server";
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -26,7 +26,7 @@ export function createApiResponse<T>(
 export function createApiError(
   error: string,
   status: number = 400,
-  details?: any
+  details?: unknown
 ): NextResponse<ApiResponse> {
   console.error("API Error:", error, details);
   return NextResponse.json(

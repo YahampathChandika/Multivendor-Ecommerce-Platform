@@ -69,7 +69,7 @@ export function ProductGrid({ className }: ProductGridProps) {
           <span>
             Showing {products.length} of {pagination.total} products
             {filters.category !== "all" && <span> in {filters.category}</span>}
-            {filters.search && <span> for "{filters.search}"</span>}
+            {filters.search && <span> for &quot;{filters.search}&quot;</span>}
           </span>
           <span>
             Page {pagination.page} of {pagination.totalPages}

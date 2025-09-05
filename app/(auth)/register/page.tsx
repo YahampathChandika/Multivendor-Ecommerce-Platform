@@ -1,7 +1,7 @@
 // app/(auth)/register/page.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LoginForm } from "@/components/auth/login-form";
@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function RegisterPage() {
+function RegisterContent() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
@@ -81,5 +81,56 @@ export default function RegisterPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+function RegisterPageFallback() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-6">
+        <Button
+          variant="ghost"
+          asChild
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <Link href="/">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
+          </Link>
+        </Button>
+
+        <Card className="w-full">
+          <CardHeader className="text-center">
+            <CardTitle>Create Account</CardTitle>
+            <CardDescription>
+              Join thousands of happy customers and start shopping
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LoginForm />
+          </CardContent>
+        </Card>
+
+        <div className="text-center text-sm text-muted-foreground">
+          <p>
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-orange-500 hover:text-orange-600 font-medium"
+            >
+              Sign in here
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<RegisterPageFallback />}>
+      <RegisterContent />
+    </Suspense>
   );
 }

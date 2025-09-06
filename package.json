@@ -7,7 +7,10 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "seed": "tsx --env-file=.env.local scripts/seed-products.ts"
+    "seed": "tsx --env-file=.env.local scripts/seed-products.ts",
+    "upload-images": "tsx --env-file=.env.local scripts/upload-local-images.ts",
+    "seed-tshirts": "tsx --env-file=.env.local scripts/seed-tshirts.ts",
+    "setup-tshirt-store": "npm run upload-images && npm run seed-tshirts"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",

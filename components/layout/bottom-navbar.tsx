@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Home, Search, Box, ShoppingBag } from "lucide-react";
+import { Home, Search, Box, ShoppingBag, Settings } from "lucide-react";
 
 interface NavItem {
   id: string;
@@ -44,9 +44,9 @@ export function BottomNavbar() {
     },
     {
       id: "products",
-      label: "Products",
-      href: "/explore",
-      icon: Box,
+      label: "Settings",
+      href: "/settings",
+      icon: Settings,
     },
   ];
 

@@ -16,8 +16,22 @@ export function useAuth() {
     user,
     loading,
     initialized,
-    signIn,
-    signOut,
+    signIn: async () => {
+      try {
+        await signIn();
+      } catch (error) {
+        console.error("Sign in failed:", error);
+        // You can add toast notification here
+      }
+    },
+    signOut: async () => {
+      try {
+        await signOut();
+      } catch (error) {
+        console.error("Sign out failed:", error);
+        // You can add toast notification here
+      }
+    },
     isAuthenticated: !!user,
   };
 }

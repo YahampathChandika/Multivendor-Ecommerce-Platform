@@ -16,6 +16,7 @@ import {
   Home,
   Box,
   ShoppingBag,
+  Settings,
 } from "lucide-react";
 
 export function Header() {
@@ -136,12 +137,12 @@ export function Header() {
                       </div>
 
                       <Link
-                        href="/orders"
+                        href="/settings"
                         className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                         onClick={() => setShowUserDropdown(false)}
                       >
-                        <User className="h-4 w-4" />
-                        My Orders
+                        <Settings className="h-4 w-4" />
+                        Settings
                       </Link>
 
                       <button

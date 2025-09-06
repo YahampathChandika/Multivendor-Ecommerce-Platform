@@ -251,13 +251,5 @@ $$ LANGUAGE plpgsql;
 -- ============================================
 -- 11. STORAGE BUCKETS (Run in Supabase Dashboard)
 -- ============================================
--- Create bucket for product images
--- INSERT INTO storage.buckets (id, name, public) VALUES ('product-images', 'product-images', true);
-
--- Storage policy for product images (public read)
--- CREATE POLICY "Product images are publicly viewable" ON storage.objects
---     FOR SELECT USING (bucket_id = 'product-images');
-
--- Storage policy for authenticated upload
--- CREATE POLICY "Authenticated users can upload product images" ON storage.objects
---     FOR INSERT WITH CHECK (bucket_id = 'product-images' AND auth.role() = 'authenticated');
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('product-images', 'product-images', true);

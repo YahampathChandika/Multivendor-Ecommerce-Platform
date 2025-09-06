@@ -4,13 +4,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Home, Search, Box, ShoppingBag, Settings } from "lucide-react";
+import { Home, Search, ShoppingBag, Settings, LucideIcon } from "lucide-react";
 
 interface NavItem {
   id: string;
   label: string;
   href: string;
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
   showBadge?: boolean;
   badgeCount?: number;
 }
@@ -43,7 +43,7 @@ export function BottomNavbar() {
       badgeCount: cartItemsCount,
     },
     {
-      id: "products",
+      id: "settings",
       label: "Settings",
       href: "/settings",
       icon: Settings,

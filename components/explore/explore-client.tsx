@@ -128,7 +128,7 @@ export default function ExploreClient() {
             Best trendy collection!
             {filters.search && (
               <span className="ml-2 text-orange-500">
-                Search results for "{filters.search}"
+                Search results for &quot;{filters.search}&quot;
               </span>
             )}
           </p>
@@ -275,7 +275,7 @@ export default function ExploreClient() {
             <div className="flex justify-center mt-12">
               <div className="text-center text-gray-500">
                 <p className="text-sm">
-                  You've seen all {pagination.total} products!
+                  You&apos;ve seen all {pagination.total} products!
                 </p>
                 <Button
                   variant="ghost"

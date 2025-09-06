@@ -45,7 +45,7 @@ const footerSections = [
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gray-900 text-white hidden md:block">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
@@ -148,7 +148,7 @@ export function Footer() {
 
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
             <Badge variant="outline" className="text-gray-400 border-gray-600">
-              Secure Shopping
+              Secure Shoppinga
             </Badge>
             <Badge variant="outline" className="text-gray-400 border-gray-600">
               Free Shipping

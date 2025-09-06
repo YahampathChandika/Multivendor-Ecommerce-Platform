@@ -62,18 +62,32 @@ export const useProductStore = create<ProductState>((set, get) => ({
     const currentFilters = get().filters;
     const updatedFilters = { ...currentFilters, ...newFilters };
 
-    // Reset page if category or search changes
-    if (newFilters.category !== undefined || newFilters.search !== undefined) {
+    // If category or search changes, reset to first page
+    if (
+      (newFilters.category !== undefined &&
+        newFilters.category !== currentFilters.category) ||
+      (newFilters.search !== undefined &&
+        newFilters.search !== currentFilters.search)
+    ) {
       updatedFilters.page = 1;
     }
 
     set({ filters: updatedFilters });
+
+    // Trigger fetch with updated filters
     get().fetchProducts(updatedFilters);
   },
 
   // Fetch products with filters
   fetchProducts: async (filters = get().filters) => {
-    set({ loading: true, error: null });
+    const currentState = get();
+    const isLoadingMore =
+      filters.page && filters.page > 1 && currentState.products.length > 0;
+
+    // Don't show loading for "load more" operations
+    if (!isLoadingMore) {
+      set({ loading: true, error: null });
+    }
 
     try {
       const params = new URLSearchParams();
@@ -106,19 +120,26 @@ export const useProductStore = create<ProductState>((set, get) => ({
 
       const { products, pagination } = result.data;
 
+      // For pagination (load more), append products. For new searches/filters, replace
+      const updatedProducts = isLoadingMore
+        ? [...currentState.products, ...products]
+        : products;
+
       set({
-        products,
+        products: updatedProducts,
         pagination,
         loading: false,
         error: null,
+        filters, // Update filters to match what was fetched
       });
     } catch (error) {
       set({
         loading: false,
         error:
           error instanceof Error ? error.message : "Failed to fetch products",
-        products: [],
-        pagination: defaultPagination,
+        // Don't clear products on error if it's a "load more" operation
+        products: isLoadingMore ? currentState.products : [],
+        pagination: isLoadingMore ? currentState.pagination : defaultPagination,
       });
     }
   },
@@ -184,7 +205,11 @@ export const useProductStore = create<ProductState>((set, get) => ({
 
   // Reset filters to default
   resetFilters: () => {
-    set({ filters: defaultFilters });
+    set({
+      filters: defaultFilters,
+      products: [],
+      pagination: defaultPagination,
+    });
     get().fetchProducts(defaultFilters);
   },
 }));

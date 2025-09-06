@@ -132,6 +132,29 @@
     }
   }
 
+  /* Search bar animations */
+  .search-enter {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  .search-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+  }
+
+  .search-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .search-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 200ms ease-in, transform 200ms ease-in;
+  }
+
   /* Smooth transitions for dropdown */
   .dropdown-enter {
     opacity: 0;
@@ -152,6 +175,22 @@
     opacity: 0;
     transform: translateY(-10px);
     transition: opacity 200ms, transform 200ms;
+  }
+
+  /* Mobile search bar positioning */
+  .mobile-search-overlay {
+    animation: slideDown 0.2s ease-out forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 

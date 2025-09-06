@@ -55,5 +55,9 @@ export function AuthButton() {
     );
   }
 
-  return <Button onClick={signIn}>Sign In with Google</Button>;
+  return (
+    <Button className="h-10" onClick={signIn}>
+      Sign In with Google
+    </Button>
+  );
 }

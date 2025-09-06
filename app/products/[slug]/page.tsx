@@ -324,7 +324,7 @@ export default function ProductDetailPage() {
                 )}
               </Button>
 
-              <div className="flex gap-2">
+              {/* <div className="flex gap-2">
                 <Button variant="outline" className="flex-1">
                   <Heart className="h-4 w-4 mr-2" />
                   Wishlist
@@ -333,65 +333,67 @@ export default function ProductDetailPage() {
                   <Share2 className="h-4 w-4 mr-2" />
                   Share
                 </Button>
-              </div>
+              </div> */}
             </div>
 
-            {/* Product Features */}
-            <Card>
-              <CardContent className="p-6 space-y-4">
-                <div className="flex items-center gap-3">
-                  <Truck className="h-5 w-5 text-orange-500" />
-                  <div>
-                    <p className="font-medium">Free Shipping</p>
-                    <p className="text-sm text-muted-foreground">
-                      On orders over $100
-                    </p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              {/* Product Features */}
+              <Card className="flex-1">
+                <CardContent className="p-6 space-y-1">
+                  <div className="flex items-center gap-3">
+                    <Truck className="h-5 w-5 text-orange-500" />
+                    <div>
+                      <p className="font-medium">Free Shipping</p>
+                      <p className="text-sm text-muted-foreground">
+                        On orders over $100
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <RefreshCw className="h-5 w-5 text-orange-500" />
-                  <div>
-                    <p className="font-medium">Easy Returns</p>
-                    <p className="text-sm text-muted-foreground">
-                      30-day return policy
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <RefreshCw className="h-5 w-5 text-orange-500" />
+                    <div>
+                      <p className="font-medium">Easy Returns</p>
+                      <p className="text-sm text-muted-foreground">
+                        30-day return policy
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-orange-500" />
-                  <div>
-                    <p className="font-medium">Quality Guarantee</p>
-                    <p className="text-sm text-muted-foreground">
-                      Premium materials only
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-orange-500" />
+                    <div>
+                      <p className="font-medium">Quality Guarantee</p>
+                      <p className="text-sm text-muted-foreground">
+                        Premium materials only
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            {/* Product Details */}
-            <Card>
-              <CardContent className="p-6 space-y-2">
-                <h3 className="font-semibold mb-3">Product Details</h3>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="text-muted-foreground">SKU:</div>
-                  <div>{currentProduct.sku}</div>
+              {/* Product Details */}
+              <Card className="flex-1">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-3">Product Details</h3>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="text-muted-foreground">SKU:</div>
+                    <div>{currentProduct.sku}</div>
 
-                  <div className="text-muted-foreground">Category:</div>
-                  <div className="capitalize">{currentProduct.category}</div>
+                    <div className="text-muted-foreground">Category:</div>
+                    <div className="capitalize">{currentProduct.category}</div>
 
-                  {currentProduct.weight && (
-                    <>
-                      <div className="text-muted-foreground">Weight:</div>
-                      <div>{currentProduct.weight}kg</div>
-                    </>
-                  )}
+                    {currentProduct.weight && (
+                      <>
+                        <div className="text-muted-foreground">Weight:</div>
+                        <div>{currentProduct.weight}kg</div>
+                      </>
+                    )}
 
-                  <div className="text-muted-foreground">In Stock:</div>
-                  <div>{currentProduct.stock} units</div>
-                </div>
-              </CardContent>
-            </Card>
+                    <div className="text-muted-foreground">In Stock:</div>
+                    <div>{currentProduct.stock} units</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>

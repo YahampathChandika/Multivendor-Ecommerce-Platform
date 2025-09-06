@@ -204,9 +204,7 @@ export default function HomePage() {
                 </Button>
               ) : (
                 <>
-                  <div className="bg-white rounded-lg p-1">
-                    <AuthButton />
-                  </div>
+                  <AuthButton />
                   <Button
                     asChild
                     variant="outline"

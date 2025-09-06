@@ -19,6 +19,8 @@ import {
   ShoppingBag,
   Settings,
   X,
+  Receipt,
+  ShoppingCart,
 } from "lucide-react";
 
 export function Header() {
@@ -133,16 +135,33 @@ export function Header() {
                     pathname === "/cart" ? "text-orange-500" : "text-gray-700"
                   }`}
                 >
-                  <ShoppingBag className="h-4 w-4 mr-2" />
+                  <ShoppingCart className="h-4 w-4 mr-2" />
                   Cart
                 </Link>
+                {/* orders */}
+                {isAuthenticated && (
+                  <Link
+                    href="/orders"
+                    className={`flex items-center text-sm font-medium transition-colors hover:text-orange-500 ${
+                      pathname === "/orders"
+                        ? "text-orange-500"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    <ShoppingBag className="h-4 w-4 mr-2" />
+                    Orders
+                  </Link>
+                )}
               </nav>
             </div>
 
             {/* Right - User Actions */}
             <div className="flex items-center space-x-3">
               {/* Desktop Search */}
-              <form onSubmit={handleSearchSubmit} className="relative hidden md:flex">
+              <form
+                onSubmit={handleSearchSubmit}
+                className="relative hidden md:flex"
+              >
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                   <Input

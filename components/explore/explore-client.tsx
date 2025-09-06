@@ -3,17 +3,14 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ProductCard } from "@/components/products/product-card";
 import { useProductStore } from "@/lib/store/product-store";
 import { PRODUCT_CATEGORIES } from "@/lib/types/product";
-import type { Product, ProductCategory } from "@/lib/types/product";
-import { Search, ShoppingBag, Loader2, AlertCircle } from "lucide-react";
+import type {  ProductCategory } from "@/lib/types/product";
+import { Search, Loader2, AlertCircle } from "lucide-react";
 
 export default function ExploreClient() {
   const router = useRouter();

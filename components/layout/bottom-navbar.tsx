@@ -4,7 +4,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Home, Search, ShoppingBag, Settings, LucideIcon } from "lucide-react";
+import {
+  Home,
+  Search,
+  ShoppingBag,
+  Settings,
+  LucideIcon,
+  ShoppingCart,
+} from "lucide-react";
 
 interface NavItem {
   id: string;
@@ -38,9 +45,15 @@ export function BottomNavbar() {
       id: "cart",
       label: "Cart",
       href: "/cart",
-      icon: ShoppingBag,
+      icon: ShoppingCart,
       showBadge: cartItemsCount > 0,
       badgeCount: cartItemsCount,
+    },
+    {
+      id: "orders",
+      label: "Orders",
+      href: "/orders",
+      icon: ShoppingBag,
     },
     {
       id: "settings",

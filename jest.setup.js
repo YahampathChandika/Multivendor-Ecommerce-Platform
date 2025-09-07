@@ -1,179 +1,70 @@
-// Optional: configure or set up a testing framework before each test.
+// jest.setup.ts
 import "@testing-library/jest-dom";
 
-// Mock Next.js router
-jest.mock("next/navigation", () => ({
-  useRouter() {
-    return {
-      push: jest.fn(),
-      replace: jest.fn(),
-      prefetch: jest.fn(),
-      back: jest.fn(),
-    };
-  },
-  useSearchParams() {
-    return new URLSearchParams();
-  },
-  usePathname() {
-    return "";
-  },
+// Mock Next.js globals that are missing in test environment
+global.Request = jest.fn().mockImplementation((url, options = {}) => ({
+  url,
+  method: options.method || "GET",
+  headers: new Map(Object.entries(options.headers || {})),
+  json: jest
+    .fn()
+    .mockResolvedValue(options.body ? JSON.parse(options.body) : {}),
+  text: jest.fn().mockResolvedValue(options.body || ""),
+  ...options,
 }));
 
-// Mock Next.js headers
-jest.mock("next/headers", () => ({
-  cookies: jest.fn(() => ({
-    getAll: jest.fn(() => []),
-    set: jest.fn(),
+global.Response = jest.fn().mockImplementation((body, options = {}) => ({
+  status: options.status || 200,
+  statusText: options.statusText || "OK",
+  headers: new Map(Object.entries(options.headers || {})),
+  json: jest
+    .fn()
+    .mockResolvedValue(typeof body === "string" ? JSON.parse(body) : body),
+  text: jest
+    .fn()
+    .mockResolvedValue(typeof body === "string" ? body : JSON.stringify(body)),
+  ok: (options.status || 200) >= 200 && (options.status || 200) < 300,
+  ...options,
+}));
+
+// Mock fetch for API calls
+global.fetch = jest.fn();
+
+// Mock NextRequest and NextResponse
+jest.mock("next/server", () => ({
+  NextRequest: jest.fn().mockImplementation((url, options = {}) => ({
+    url,
+    method: options.method || "GET",
+    headers: new Map(Object.entries(options.headers || {})),
+    json: jest.fn().mockResolvedValue({}),
+    ...options,
   })),
-}));
-
-// Mock Supabase client with proper chaining
-jest.mock("@/lib/supabase/client", () => ({
-  createClient: jest.fn(() => ({
-    auth: {
-      getSession: jest.fn(),
-      onAuthStateChange: jest.fn(),
-      signInWithOAuth: jest.fn(),
-      signOut: jest.fn(),
-      exchangeCodeForSession: jest.fn(),
-    },
-    from: jest.fn(() => ({
-      select: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          single: jest.fn(),
-          order: jest.fn(() => ({
-            range: jest.fn(),
-          })),
-        })),
-        order: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            or: jest.fn(() => ({
-              range: jest.fn(),
-            })),
-          })),
-          range: jest.fn(),
-        })),
-        range: jest.fn(),
-      })),
-      insert: jest.fn(() => ({
-        select: jest.fn(),
-      })),
-      update: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          select: jest.fn(),
-        })),
-      })),
-      delete: jest.fn(() => ({
-        eq: jest.fn(),
-      })),
-      upsert: jest.fn(() => ({
-        select: jest.fn(),
-      })),
+  NextResponse: {
+    json: jest.fn((data, options = {}) => ({
+      json: jest.fn().mockResolvedValue(data),
+      status: options.status || 200,
+      ...options,
     })),
-  })),
-}));
-
-// Mock Supabase server client with proper chaining
-jest.mock("@/lib/supabase/server", () => ({
-  createServerSupabaseClient: jest.fn(() => ({
-    auth: {
-      getSession: jest.fn(),
-      onAuthStateChange: jest.fn(),
-      signInWithOAuth: jest.fn(),
-      signOut: jest.fn(),
-      exchangeCodeForSession: jest.fn(),
-    },
-    from: jest.fn(() => ({
-      select: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          single: jest.fn(),
-          order: jest.fn(() => ({
-            range: jest.fn(),
-          })),
-        })),
-        order: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            or: jest.fn(() => ({
-              range: jest.fn(),
-            })),
-          })),
-          range: jest.fn(),
-        })),
-        range: jest.fn(),
-      })),
-      insert: jest.fn(() => ({
-        select: jest.fn(),
-      })),
-      update: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          select: jest.fn(),
-        })),
-      })),
-      delete: jest.fn(() => ({
-        eq: jest.fn(),
-      })),
-      upsert: jest.fn(() => ({
-        select: jest.fn(),
-      })),
+    redirect: jest.fn((url, status = 302) => ({
+      status,
+      headers: { location: url },
     })),
-  })),
+  },
 }));
 
-// Mock auth hook with jest.fn() return
-jest.mock("@/lib/hooks/use-auth", () => ({
-  useAuth: jest.fn(() => ({
-    user: null,
-    loading: false,
-    signIn: jest.fn(),
-    signOut: jest.fn(),
-    isAuthenticated: false,
-  })),
-}));
-
-// Mock API response utilities
-jest.mock("@/lib/utils/api-response", () => ({
-  createApiResponse: jest.fn((data, status = 200, message) => ({
-    json: async () => ({ success: true, data, message }),
-    status,
-  })),
-  createApiError: jest.fn((message, status = 400) => ({
-    json: async () => ({ success: false, error: message }),
-    status,
-  })),
-}));
-
-// Mock window.matchMedia for responsive tests
-Object.defineProperty(window, "matchMedia", {
-  writable: true,
-  value: jest.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(),
-    removeListener: jest.fn(),
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-});
-
-// Mock Next.js Image component properly
-jest.mock("next/image", () => {
-  return function MockImage({ src, alt, fill, unoptimized, ...props }) {
-    // Convert boolean props to strings to avoid React warnings
-    const imgProps = {
+// Mock Image component to avoid DOM warnings
+jest.mock("next/image", () => ({
+  __esModule: true,
+  default: jest.fn().mockImplementation(({ src, alt, ...props }) => {
+    // Remove problematic props that cause React DOM warnings
+    const { fill, unoptimized, priority, sizes, ...cleanProps } = props;
+    return React.createElement("img", {
       src,
       alt,
-      ...props,
-    };
+      ...cleanProps,
+    });
+  }),
+}));
 
-    // Handle boolean attributes that React doesn't like
-    if (fill) imgProps["data-fill"] = "true";
-    if (unoptimized) imgProps["data-unoptimized"] = "true";
-
-    return React.createElement("img", imgProps);
-  };
-});
-
-// Mock global React for Next.js Image mock
-global.React = require("react");
+// Ensure React is available for the Image mock
+import React from "react";

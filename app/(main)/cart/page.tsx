@@ -230,27 +230,29 @@ export default function CartPage() {
               return (
                 <Card key={item.id} className="overflow-hidden">
                   <CardContent className="p-4 sm:p-6">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      {/* Product Image */}
+                    {/* Changed to always use flex-row layout for consistent horizontal layout */}
+                    <div className="flex flex-row gap-4">
+                      {/* Product Image - Fixed size for consistent layout */}
                       <div className="flex-shrink-0">
-                        <div className="relative w-full sm:w-24 h-24 rounded-lg overflow-hidden bg-gray-100">
+                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-gray-100">
                           <Image
                             src={images[0] || "/placeholder-product.jpg"}
                             alt={item.products.title}
                             fill
-                            className="object-cover"
-                            sizes="(max-width: 640px) 100vw, 96px"
+                            className="object-contain" // Changed from object-cover to object-contain
+                            sizes="(max-width: 640px) 80px, 96px"
                           />
                         </div>
                       </div>
 
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex flex-col sm:flex-row sm:justify-between gap-2 sm:gap-4">
+                        <div className="flex flex-col gap-3">
+                          {/* Product Title and Variants */}
                           <div className="min-w-0 flex-1">
                             <Link
                               href={`/products/${item.products.slug}`}
-                              className="font-medium text-sm sm:text-base hover:text-orange-500 transition-colors line-clamp-2"
+                              className="font-medium text-sm sm:text-base hover:text-orange-500 transition-colors line-clamp-2 block"
                             >
                               {item.products.title}
                             </Link>
@@ -280,8 +282,8 @@ export default function CartPage() {
                             </div>
                           </div>
 
-                          {/* Actions */}
-                          <div className="flex items-center justify-between sm:justify-end gap-4">
+                          {/* Actions Row */}
+                          <div className="flex items-center justify-between">
                             {/* Quantity Controls */}
                             <div className="flex items-center border rounded-lg">
                               <Button
@@ -372,11 +374,11 @@ export default function CartPage() {
                   </div>
                 )}
 
-                <Button asChild className="w-full" size="lg">
+                <Button asChild className="w-full bg-orange-500 rounded-full" size="lg">
                   <Link href="/checkout">Proceed to Checkout</Link>
                 </Button>
 
-                <Button variant="outline" asChild className="w-full">
+                <Button variant="outline" asChild className="w-full rounded-full">
                   <Link href="/explore">Continue Shopping</Link>
                 </Button>
               </CardContent>

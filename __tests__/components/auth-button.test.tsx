@@ -1,20 +1,16 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { AuthButton } from "@/components/auth/auth-button";
-import '@testing-library/jest-dom';
+import { useAuth } from "@/lib/hooks/use-auth";
+import "@testing-library/jest-dom";
+import type { User } from "@supabase/supabase-js";
 
 // Mock the useAuth hook
 const mockSignIn = jest.fn();
 const mockSignOut = jest.fn();
 
-jest.mock("@/lib/hooks/use-auth", () => ({
-  useAuth: () => ({
-    user: null,
-    loading: false,
-    signIn: mockSignIn,
-    signOut: mockSignOut,
-    isAuthenticated: false,
-  }),
-}));
+// Mock as a jest function that can be modified
+jest.mock("@/lib/hooks/use-auth");
+const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 
 // Mock Next.js Image component
 jest.mock("next/image", () => {
@@ -23,9 +19,38 @@ jest.mock("next/image", () => {
   };
 });
 
+// Helper function to create a mock Supabase User
+function createMockUser(overrides: Partial<User> = {}): User {
+  return {
+    id: "user-123",
+    aud: "authenticated",
+    email: "test@example.com",
+    email_confirmed_at: "2023-01-01T00:00:00.000Z",
+    created_at: "2023-01-01T00:00:00.000Z",
+    updated_at: "2023-01-01T00:00:00.000Z",
+    app_metadata: {},
+    user_metadata: {
+      full_name: "John Doe",
+      avatar_url: "https://example.com/avatar.jpg",
+    },
+    role: "authenticated",
+    ...overrides,
+  };
+}
+
 describe("AuthButton", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Set default mock return value
+    mockUseAuth.mockReturnValue({
+      user: null,
+      loading: false,
+      signIn: mockSignIn,
+      signOut: mockSignOut,
+      isAuthenticated: false,
+      initialized: true,
+    });
   });
 
   test("renders sign in button when not authenticated", () => {
@@ -46,12 +71,13 @@ describe("AuthButton", () => {
 
   test("renders loading state", () => {
     // Mock loading state
-    jest.mocked(require("@/lib/hooks/use-auth").useAuth).mockReturnValue({
+    mockUseAuth.mockReturnValue({
       user: null,
       loading: true,
       signIn: mockSignIn,
       signOut: mockSignOut,
       isAuthenticated: false,
+      initialized: true,
     });
 
     render(<AuthButton />);
@@ -62,20 +88,21 @@ describe("AuthButton", () => {
 
   test("renders authenticated state with user info", () => {
     // Mock authenticated state
-    const mockUser = {
+    const mockUser = createMockUser({
       email: "test@example.com",
       user_metadata: {
         full_name: "John Doe",
         avatar_url: "https://example.com/avatar.jpg",
       },
-    };
+    });
 
-    jest.mocked(require("@/lib/hooks/use-auth").useAuth).mockReturnValue({
+    mockUseAuth.mockReturnValue({
       user: mockUser,
       loading: false,
       signIn: mockSignIn,
       signOut: mockSignOut,
       isAuthenticated: true,
+      initialized: true,
     });
 
     render(<AuthButton />);
@@ -87,20 +114,21 @@ describe("AuthButton", () => {
 
   test("calls signOut when sign out button is clicked", () => {
     // Mock authenticated state
-    const mockUser = {
+    const mockUser = createMockUser({
       email: "test@example.com",
       user_metadata: {
         full_name: "John Doe",
         avatar_url: "https://example.com/avatar.jpg",
       },
-    };
+    });
 
-    jest.mocked(require("@/lib/hooks/use-auth").useAuth).mockReturnValue({
+    mockUseAuth.mockReturnValue({
       user: mockUser,
       loading: false,
       signIn: mockSignIn,
       signOut: mockSignOut,
       isAuthenticated: true,
+      initialized: true,
     });
 
     render(<AuthButton />);
@@ -113,19 +141,21 @@ describe("AuthButton", () => {
 
   test("displays fallback user icon when no avatar", () => {
     // Mock authenticated state without avatar
-    const mockUser = {
+    const mockUser = createMockUser({
       email: "test@example.com",
       user_metadata: {
         full_name: "John Doe",
+        // No avatar_url
       },
-    };
+    });
 
-    jest.mocked(require("@/lib/hooks/use-auth").useAuth).mockReturnValue({
+    mockUseAuth.mockReturnValue({
       user: mockUser,
       loading: false,
       signIn: mockSignIn,
       signOut: mockSignOut,
       isAuthenticated: true,
+      initialized: true,
     });
 
     render(<AuthButton />);
@@ -137,21 +167,46 @@ describe("AuthButton", () => {
 
   test("displays email as fallback when no name", () => {
     // Mock authenticated state without name
-    const mockUser = {
+    const mockUser = createMockUser({
       email: "test@example.com",
-      user_metadata: {},
-    };
+      user_metadata: {
+        // No full_name
+      },
+    });
 
-    jest.mocked(require("@/lib/hooks/use-auth").useAuth).mockReturnValue({
+    mockUseAuth.mockReturnValue({
       user: mockUser,
       loading: false,
       signIn: mockSignIn,
       signOut: mockSignOut,
       isAuthenticated: true,
+      initialized: true,
     });
 
     render(<AuthButton />);
 
     expect(screen.getByText("test@example.com")).toBeInTheDocument();
+  });
+
+  test("handles user with empty metadata", () => {
+    // Mock authenticated state with minimal data
+    const mockUser = createMockUser({
+      email: "minimal@example.com",
+      user_metadata: {},
+    });
+
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      loading: false,
+      signIn: mockSignIn,
+      signOut: mockSignOut,
+      isAuthenticated: true,
+      initialized: true,
+    });
+
+    render(<AuthButton />);
+
+    // Should fallback to email
+    expect(screen.getByText("minimal@example.com")).toBeInTheDocument();
   });
 });

@@ -16,9 +16,10 @@ export function ensureArray<T>(value: unknown): T[] {
   if (typeof value === "string") {
     try {
       const parsed = JSON.parse(value);
-      return Array.isArray(parsed) ? parsed : [];
+      return Array.isArray(parsed) ? parsed : [value as T];
     } catch {
-      return [];
+      // If JSON parsing fails, treat as single value
+      return [value as T];
     }
   }
 
@@ -31,7 +32,7 @@ export function ensureArray<T>(value: unknown): T[] {
  */
 export function getFirstItems<T>(arr: unknown, count: number): T[] {
   const safeArray = ensureArray<T>(arr);
-  return safeArray.slice(0, count);
+  return safeArray.slice(0, Math.max(0, count));
 }
 
 /**

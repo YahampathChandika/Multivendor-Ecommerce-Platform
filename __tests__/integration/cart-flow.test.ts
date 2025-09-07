@@ -30,12 +30,22 @@ jest.mock("@/lib/supabase/server", () => ({
 }));
 
 jest.mock("@/lib/utils/api-response", () => ({
-  createApiResponse: jest.fn((data, status = 200, message) =>
-    Response.json({ success: true, data, message }, { status })
-  ),
-  createApiError: jest.fn((message, status) =>
-    Response.json({ success: false, error: message }, { status })
-  ),
+  createApiResponse: jest.fn((data, status = 200, message) => {
+    const response = {
+      json: async () => ({ success: true, data, message }),
+      status,
+    };
+    Object.defineProperty(response, "status", { value: status });
+    return response;
+  }),
+  createApiError: jest.fn((message, status = 400) => {
+    const response = {
+      json: async () => ({ success: false, error: message }),
+      status,
+    };
+    Object.defineProperty(response, "status", { value: status });
+    return response;
+  }),
 }));
 
 jest.mock("@/lib/utils/auth-middleware", () => ({
@@ -68,17 +78,16 @@ describe("Cart Integration Flow", () => {
 
   describe("Complete Purchase Flow", () => {
     test("add to cart → view cart → checkout → create order", async () => {
-      // Step 1: Add item to cart
+      // Create mock request without using NextRequest constructor
       const mockProductQuery = {
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({
-              data: mockProduct,
-              error: null,
-            }),
-          }),
+        json: jest.fn().mockResolvedValue({
+          product_id: "product-1",
+          quantity: 2,
+          selected_size: "M",
+          selected_color: "Blue",
         }),
-      };
+        url: "http://localhost:3000/api/cart",
+      } as any;
 
       const mockCartUpsert = {
         upsert: jest.fn().mockReturnValue({

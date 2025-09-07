@@ -21,10 +21,11 @@ jest.mock("../../../../lib/utils/auth-middleware", () => ({
 
 describe("/api/cart", () => {
   let mockSupabase: any;
-  let mockRequest: NextRequest;
+  let mockRequest: any; // Don't type as NextRequest to avoid conflicts
 
   beforeEach(() => {
-    mockSupabase = {
+    // Create a complete Supabase mock with all chaining methods
+    const createChainableMock = () => ({
       from: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
       insert: jest.fn().mockReturnThis(),
@@ -32,14 +33,18 @@ describe("/api/cart", () => {
       eq: jest.fn().mockReturnThis(),
       single: jest.fn(),
       order: jest.fn().mockReturnThis(),
-    };
+      range: jest.fn(),
+    });
 
-    (createServerSupabaseClient as jest.Mock).mockResolvedValue(mockSupabase);
+    mockSupabase = createChainableMock();
+    (
+      require("@/lib/supabase/server").createServerSupabaseClient as jest.Mock
+    ).mockResolvedValue(mockSupabase);
 
     mockRequest = {
       json: jest.fn(),
       url: "http://localhost:3000/api/cart",
-    } as any;
+    };
 
     jest.clearAllMocks();
   });

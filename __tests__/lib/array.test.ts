@@ -18,10 +18,10 @@ describe("ensureArray", () => {
     expect(ensureArray("[]")).toEqual([]);
   });
 
-  test("returns empty array for invalid JSON", () => {
-    expect(ensureArray("invalid json")).toEqual([]);
-    expect(ensureArray('{"not": "array"}')).toEqual([]);
-    expect(ensureArray("[invalid")).toEqual([]);
+  test("returns single value for invalid JSON", () => {
+    expect(ensureArray("invalid json")).toEqual(["invalid json"]);
+    expect(ensureArray('{"not": "array"}')).toEqual(['{"not": "array"}']);
+    expect(ensureArray("[invalid")).toEqual(["[invalid"]);
   });
 
   test("wraps single values in array", () => {

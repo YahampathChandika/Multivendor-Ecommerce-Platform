@@ -17,10 +17,22 @@ jest.mock("@/lib/supabase/server", () => ({
 }));
 
 jest.mock("@/lib/utils/api-response", () => ({
-  createApiResponse: jest.fn((data) => Response.json({ success: true, data })),
-  createApiError: jest.fn((message, status) =>
-    Response.json({ success: false, error: message }, { status })
-  ),
+  createApiResponse: jest.fn((data, status = 200, message) => {
+    const response = {
+      json: async () => ({ success: true, data, message }),
+      status,
+    };
+    Object.defineProperty(response, "status", { value: status });
+    return response;
+  }),
+  createApiError: jest.fn((message, status = 400) => {
+    const response = {
+      json: async () => ({ success: false, error: message }),
+      status,
+    };
+    Object.defineProperty(response, "status", { value: status });
+    return response;
+  }),
 }));
 
 describe("/api/products", () => {
@@ -78,9 +90,13 @@ describe("/api/products", () => {
   ];
 
   test("fetches products with default pagination", async () => {
-    const request = new NextRequest("http://localhost:3000/api/products");
+    const url = "http://localhost:3000/api/products";
+    const mockRequest = {
+      url,
+      nextUrl: new URL(url),
+    } as NextRequest;
 
-    const response = await GET(request);
+    const response = await GET(mockRequest);
     const data = await response.json();
 
     expect(mockSupabaseClient.from).toHaveBeenCalledWith("products");

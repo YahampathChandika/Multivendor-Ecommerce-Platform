@@ -244,11 +244,18 @@ function HeaderContent() {
                         </Link>
 
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             setShowUserDropdown(false);
-                            signOut();
+                            try {
+                              await signOut();
+                              // The signOut function now handles the redirect automatically
+                            } catch (error) {
+                              console.error("Sign out failed:", error);
+                              // Force page refresh as fallback
+                              window.location.reload();
+                            }
                           }}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left disabled:opacity-50"
                         >
                           <LogOut className="h-4 w-4" />
                           Sign Out
@@ -435,11 +442,18 @@ function HeaderFallback() {
                       </Link>
 
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           setShowUserDropdown(false);
-                          signOut();
+                          try {
+                            await signOut();
+                            // The signOut function now handles the redirect automatically
+                          } catch (error) {
+                            console.error("Sign out failed:", error);
+                            // Force page refresh as fallback
+                            window.location.reload();
+                          }
                         }}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left disabled:opacity-50"
                       >
                         <LogOut className="h-4 w-4" />
                         Sign Out

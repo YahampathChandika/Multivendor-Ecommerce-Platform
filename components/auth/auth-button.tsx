@@ -5,9 +5,24 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { LogOut, User } from "lucide-react";
+import { useState } from "react";
 
 export function AuthButton() {
   const { user, loading, signIn, signOut, isAuthenticated } = useAuth();
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    try {
+      setIsSigningOut(true);
+      await signOut();
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      // Force refresh if sign out fails
+      window.location.reload();
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
 
   if (loading) {
     return <Button disabled>Loading...</Button>;
@@ -47,17 +62,27 @@ export function AuthButton() {
           </span>
         </div>
 
-        <Button variant="outline" size="sm" onClick={signOut}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSignOut}
+          disabled={isSigningOut}
+        >
           <LogOut className="h-4 w-4" />
-          {/* <span className="hidden sm:inline ml-2">Sign Out</span> */}
+          {isSigningOut && (
+            <span className="hidden sm:inline ml-2">Signing Out...</span>
+          )}
+          {!isSigningOut && (
+            <span className="hidden sm:inline ml-2">Sign Out</span>
+          )}
         </Button>
       </div>
     );
   }
 
   return (
-    <Button className="h-10" onClick={signIn}>
-      Sign In with Google
+    <Button className="h-10" onClick={signIn} disabled={loading}>
+      {loading ? "Signing In..." : "Sign In with Google"}
     </Button>
   );
 }

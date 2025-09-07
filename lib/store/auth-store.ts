@@ -36,6 +36,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (error) throw error;
     } catch (error) {
       console.error("Sign in error:", error);
+      throw error; // Re-throw to let useAuth handle it
     } finally {
       set({ loading: false });
     }
@@ -46,11 +47,42 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ loading: true });
 
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      // Clear user state immediately for UI responsiveness
       set({ user: null });
+
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut({
+        scope: "global", // Sign out from all sessions
+      });
+
+      if (error) {
+        console.error("Sign out error:", error);
+        // Don't throw here - user state is already cleared
+      }
+
+      // Force redirect to home page to ensure clean state
+      if (typeof window !== "undefined") {
+        // Clear any cached data
+        if ("caches" in window) {
+          caches.keys().then((names) => {
+            names.forEach((name) => {
+              caches.delete(name);
+            });
+          });
+        }
+
+        // Redirect to home page
+        window.location.href = "/";
+      }
     } catch (error) {
-      console.error("Sign out error:", error);
+      console.error("Sign out failed:", error);
+      // Even if there's an error, clear the user state
+      set({ user: null });
+
+      // Still try to redirect
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
     } finally {
       set({ loading: false });
     }
@@ -63,25 +95,46 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       // Get initial session
       const {
         data: { session },
+        error: sessionError,
       } = await supabase.auth.getSession();
 
-      if (session?.user) {
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        set({ user: null });
+      } else if (session?.user) {
         set({ user: session.user });
         await ensureUserProfile(session.user);
       }
 
       // Listen for auth changes
-      supabase.auth.onAuthStateChange(async (event, session) => {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log("Auth state change:", event, session?.user?.email);
+
         const user = session?.user ?? null;
         set({ user });
 
-        // Create user profile if it doesn't exist
-        if (user && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")) {
+        // Handle specific events
+        if (event === "SIGNED_OUT") {
+          // Ensure user is cleared
+          set({ user: null });
+
+          // Clear any local storage or cached data
+          if (typeof window !== "undefined") {
+            localStorage.clear();
+            sessionStorage.clear();
+          }
+        } else if (
+          user &&
+          (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")
+        ) {
           await ensureUserProfile(user);
         }
       });
     } catch (error) {
       console.error("Auth initialization error:", error);
+      set({ user: null });
     } finally {
       set({ initialized: true });
     }

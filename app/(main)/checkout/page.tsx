@@ -7,7 +7,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/lib/hooks/use-auth";
@@ -55,10 +54,26 @@ interface ShippingAddress {
 }
 
 const PAYMENT_METHODS = [
-  { id: "card", name: "Credit/Debit Card", icon: CreditCard },
-  { id: "apple", name: "Apple Pay", icon: CreditCard },
-  { id: "google", name: "Google Pay", icon: CreditCard },
-  { id: "paypal", name: "PayPal", icon: CreditCard },
+  {
+    id: "card",
+    name: "Credit/Debit Card",
+    logo: "https://1000logos.net/wp-content/uploads/2017/06/VISA-Logo.jpg",
+  },
+  {
+    id: "apple",
+    name: "Apple Pay",
+    logo: "https://download.logo.wine/logo/Apple_Pay/Apple_Pay-Logo.wine.png",
+  },
+  {
+    id: "google",
+    name: "Google Pay",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/2560px-Google_Pay_Logo.svg.png",
+  },
+  {
+    id: "paypal",
+    name: "PayPal",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png",
+  },
 ];
 
 export default function CheckoutPage() {
@@ -373,9 +388,7 @@ export default function CheckoutPage() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {PAYMENT_METHODS.map((method) => {
-                      const Icon = method.icon;
                       const isSelected = selectedPaymentMethod === method.id;
-
                       return (
                         <button
                           key={method.id}
@@ -387,7 +400,11 @@ export default function CheckoutPage() {
                               : "border-gray-200 hover:border-gray-300"
                           }`}
                         >
-                          <Icon className="h-5 w-5" />
+                          <img
+                            src={method.logo}
+                            alt={method.name}
+                            className="h-8 w-8 object-contain rounded"
+                          />
                           <span className="font-medium">{method.name}</span>
                           {isSelected && (
                             <Check className="h-4 w-4 text-orange-500 ml-auto" />
@@ -396,7 +413,6 @@ export default function CheckoutPage() {
                       );
                     })}
                   </div>
-
                   {/* Payment Form Simulation */}
                   {selectedPaymentMethod === "card" && (
                     <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-3">
@@ -503,7 +519,7 @@ export default function CheckoutPage() {
 
                   <Button
                     type="submit"
-                    className="w-full"
+                    className="w-full bg-orange-500 rounded-full"
                     size="lg"
                     disabled={submitting}
                   >

@@ -120,7 +120,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
               </h3>
 
               {/* Price */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between md:py-2">
                 <p className="font-semibold text-base text-foreground">
                   {formatCurrency(product.price, product.currency)}
                 </p>
@@ -133,7 +133,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
               {/* Sizes preview */}
               {sizes.length > 0 && (
-                <div className="flex items-center gap-1 mt-2">
+                <div className="flex items-center gap-1 mt-2 opacity-0 md:opacity-100">
                   <span className="text-xs text-muted-foreground">Sizes:</span>
                   <div className="flex gap-1">
                     {sizes.slice(0, 4).map((size) => (

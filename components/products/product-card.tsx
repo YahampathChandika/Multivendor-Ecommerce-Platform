@@ -75,7 +75,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
   return (
     <div className={`relative ${className}`}>
       <Link href={`/products/${product.slug}`}>
-        <Card className="group overflow-hidden h-full border-0 shadow-sm hover:shadow-md transition-all duration-300 bg-white">
+        <Card className="group overflow-hidden h-full border-0 shadow-sm hover:shadow-md transition-all duration-300 bg-white py-0">
           <div className="relative aspect-square overflow-hidden rounded-t-lg">
             <Image
               src={primaryImage}

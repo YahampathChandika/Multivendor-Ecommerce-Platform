@@ -1,10 +1,10 @@
-// components/auth/login-form.tsx
+// components/auth/register-form.tsx
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/hooks/use-auth";
 
-export function LoginForm() {
+export function RegisterForm() {
   const { signIn, loading } = useAuth();
 
   return (
@@ -12,19 +12,29 @@ export function LoginForm() {
       {/* Brand Header */}
       <div className="text-center mb-12">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl mb-6 shadow-lg">
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          <svg
+            className="w-8 h-8 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+            />
           </svg>
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">
-          Welcome Back
+          Join FashionHub
         </h1>
         <p className="text-gray-500 text-base leading-relaxed">
-          Please sign in to access your account
+          Create your account to start shopping
         </p>
       </div>
 
-      {/* Login Card */}
+      {/* Register Card */}
       <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgb(0,0,0,0.12)] border-0 p-10">
         <Button
           onClick={signIn}
@@ -34,7 +44,7 @@ export function LoginForm() {
           {loading ? (
             <div className="flex items-center gap-3">
               <div className="w-5 h-5 border-2 border-gray-300 border-t-orange-500 rounded-full animate-spin" />
-              <span className="text-base">Authenticating...</span>
+              <span className="text-base">Creating account...</span>
             </div>
           ) : (
             <div className="flex items-center gap-4">
@@ -59,11 +69,36 @@ export function LoginForm() {
                 </svg>
               </div>
               <span className="text-base font-medium group-hover:text-gray-900 transition-colors">
-                Continue with Google
+                Sign up with Google
               </span>
             </div>
           )}
         </Button>
+
+        {/* Benefits */}
+        <div className="mt-8 space-y-3">
+          <div className="text-center text-sm text-gray-500 mb-4">
+            What you'll get:
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-3 text-sm text-gray-600">
+              <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></div>
+              <span>Save your favorite items</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm text-gray-600">
+              <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></div>
+              <span>Track your orders</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm text-gray-600">
+              <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></div>
+              <span>Faster checkout</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm text-gray-600">
+              <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></div>
+              <span>Exclusive member offers</span>
+            </div>
+          </div>
+        </div>
 
         {/* Divider */}
         <div className="relative my-8">
@@ -71,14 +106,23 @@ export function LoginForm() {
             <div className="w-full border-t border-gray-100"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-white text-gray-400 font-medium">Secure Authentication</span>
+            <span className="px-4 bg-white text-gray-400 font-medium">
+              Quick & Secure Signup
+            </span>
           </div>
         </div>
 
-        {/* Security Note */}
+        {/* Terms */}
         <div className="text-center">
           <p className="text-xs text-gray-400 leading-relaxed">
-            Protected by enterprise-grade security
+            By signing up, you agree to our{" "}
+            <a href="#" className="text-orange-500 hover:underline">
+              Terms
+            </a>{" "}
+            and{" "}
+            <a href="#" className="text-orange-500 hover:underline">
+              Privacy Policy
+            </a>
           </p>
         </div>
       </div>
@@ -86,12 +130,12 @@ export function LoginForm() {
       {/* Footer Link */}
       <div className="text-center mt-8">
         <p className="text-gray-500">
-          New to FashionHub?{" "}
-          <a 
-            href="/register" 
+          Already have an account?{" "}
+          <a
+            href="/login"
             className="text-orange-600 font-semibold hover:text-orange-700 transition-colors duration-200 hover:underline"
           >
-            Create an account
+            Sign in here
           </a>
         </p>
       </div>

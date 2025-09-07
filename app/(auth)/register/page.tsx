@@ -4,17 +4,10 @@
 import { useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LoginForm } from "@/components/auth/login-form";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { RegisterForm } from "@/components/auth/register-form";
 
 function RegisterContent() {
   const { isAuthenticated } = useAuth();
@@ -28,57 +21,23 @@ function RegisterContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
+      <div className="w-full max-w-lg">
         {/* Back Button */}
-        <Button
-          variant="ghost"
-          asChild
-          className="text-muted-foreground hover:text-foreground"
-        >
-          <Link href="/">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Link>
-        </Button>
-
-        {/* Register Form */}
-        <Card className="w-full">
-          <CardHeader className="text-center">
-            <CardTitle>Create Account</CardTitle>
-            <CardDescription>
-              Join thousands of happy customers and start shopping
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <LoginForm />
-          </CardContent>
-        </Card>
-
-        {/* Additional Info */}
-        <div className="text-center text-sm text-muted-foreground">
-          <p>
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="text-orange-500 hover:text-orange-600 font-medium"
-            >
-              Sign in here
+        <div className="mb-8">
+          <Button
+            variant="ghost"
+            asChild
+            className="text-gray-500 hover:text-gray-700 hover:bg-white/50 transition-all duration-200 rounded-xl px-4 py-2"
+          >
+            <Link href="/">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Home
             </Link>
-          </p>
+          </Button>
         </div>
 
-        {/* Benefits */}
-        <Card className="bg-orange-50 border-orange-200">
-          <CardContent className="p-4">
-            <h3 className="font-medium text-sm mb-2">Why create an account?</h3>
-            <ul className="text-xs text-muted-foreground space-y-1">
-              <li>• Save your favorite items</li>
-              <li>• Track your orders</li>
-              <li>• Faster checkout</li>
-              <li>• Exclusive member offers</li>
-            </ul>
-          </CardContent>
-        </Card>
+        {/* Register Form */}
+        <RegisterForm />
       </div>
     </div>
   );
@@ -87,40 +46,64 @@ function RegisterContent() {
 function RegisterPageFallback() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        <Button
-          variant="ghost"
-          asChild
-          className="text-muted-foreground hover:text-foreground"
-        >
-          <Link href="/">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Link>
-        </Button>
-
-        <Card className="w-full">
-          <CardHeader className="text-center">
-            <CardTitle>Create Account</CardTitle>
-            <CardDescription>
-              Join thousands of happy customers and start shopping
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <LoginForm />
-          </CardContent>
-        </Card>
-
-        <div className="text-center text-sm text-muted-foreground">
-          <p>
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="text-orange-500 hover:text-orange-600 font-medium"
-            >
-              Sign in here
+      <div className="w-full max-w-lg">
+        {/* Back Button */}
+        <div className="mb-8">
+          <Button
+            variant="ghost"
+            asChild
+            className="text-gray-500 hover:text-gray-700 hover:bg-white/50 transition-all duration-200 rounded-xl px-4 py-2"
+          >
+            <Link href="/">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Home
             </Link>
-          </p>
+          </Button>
+        </div>
+
+        {/* Loading state with same design pattern */}
+        <div className="w-full max-w-md mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl mb-6 shadow-lg">
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">
+              Join FashionHub
+            </h1>
+            <p className="text-gray-500 text-base leading-relaxed">
+              Create your account to start shopping
+            </p>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgb(0,0,0,0.12)] border-0 p-10">
+            <div className="w-full h-14 bg-gray-100 rounded-2xl animate-pulse"></div>
+
+            <div className="mt-8 space-y-3">
+              <div className="text-center text-sm text-gray-500 mb-4">
+                What you'll get:
+              </div>
+              <div className="space-y-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    <div className="h-4 bg-gray-200 rounded flex-1 animate-pulse"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

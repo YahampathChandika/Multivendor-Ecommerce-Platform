@@ -5,7 +5,7 @@ A modern, production-grade e-commerce platform built with Next.js, React, and Ty
 ## 🔗 Live Demo & Resources
 
 - **🌐 Live Application:** [https://mvc-platform.vercel.app/](https://mvc-platform.vercel.app/)
-- **📹 Demo Video:** [https://screenrec.com/share/0Vn4bpGS3z](https://screenrec.com/share/0Vn4bpGS3z)
+- **📹 Demo Video:** [https://screenrec.com/share/y2igvmfH7D](https://screenrec.com/share/y2igvmfH7D)
 - **💻 GitHub Repository:** [https://github.com/YahampathChandika/Multivendor-Ecommerce-Platform](https://github.com/YahampathChandika/Multivendor-Ecommerce-Platform)
 
 ## 📋 Table of Contents
@@ -493,4 +493,4 @@ This project is created for educational and demonstration purposes. Feel free to
 
 ---
 
-**Built with ❤️ by Yahampath Chandika** | **[Live Demo](https://mvc-platform.vercel.app/)** | **[Watch Demo Video](https://screenrec.com/share/0Vn4bpGS3z)**
+**Built with ❤️ by Yahampath Chandika** | **[Live Demo](https://mvc-platform.vercel.app/)** | **[Watch Demo Video](https://screenrec.com/share/y2igvmfH7D)**

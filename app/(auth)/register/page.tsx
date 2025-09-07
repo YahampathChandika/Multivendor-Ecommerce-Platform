@@ -92,7 +92,7 @@ function RegisterPageFallback() {
 
             <div className="mt-8 space-y-3">
               <div className="text-center text-sm text-gray-500 mb-4">
-                What you'll get:
+                What you&apos;ll get:
               </div>
               <div className="space-y-2">
                 {[1, 2, 3, 4].map((i) => (
